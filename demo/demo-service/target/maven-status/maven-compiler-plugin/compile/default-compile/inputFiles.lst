@@ -1,0 +1,5 @@
+/demoworkspace/demo/demo-service/src/main/java/com/demo/dao/ICustomerDAO.java
+/demoworkspace/demo/demo-service/src/main/java/com/demo/service/impl/CustomerFacadeImpl.java
+/demoworkspace/demo/demo-service/src/main/java/com/demo/dao/IBaseDAO.java
+/demoworkspace/demo/demo-service/src/main/java/com/demo/dao/impl/CustomerDAO.java
+/demoworkspace/demo/demo-service/src/main/java/com/demo/service/CustomerFacade.java

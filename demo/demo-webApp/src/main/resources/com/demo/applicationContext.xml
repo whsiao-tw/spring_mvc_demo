@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+  xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/data/mongo 
+    http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/jdbc
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <context:annotation-config />
+ 
+    <context:component-scan base-package="com.demo" />
+    
+    <!-- MongoDB configuration -->    
+	<mongo:db-factory id="mongoDbFactory" host="localhost" port="27017" dbname="demo" />
+	
+	<bean id="mappingContext" class="org.springframework.data.mongodb.core.mapping.MongoMappingContext" />	
+	
+	<bean id="mongoTypeMapper" class="org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper">
+		<constructor-arg name="typeKey"><null/></constructor-arg>
+	</bean>
+	
+	<bean id="mongoConverter" class="org.springframework.data.mongodb.core.convert.MappingMongoConverter">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+		<constructor-arg name="mappingContext" ref="mappingContext" />
+		<property name="typeMapper" ref="mongoTypeMapper"></property>
+	</bean>
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate" >
+    	<constructor-arg ref="mongoDbFactory" />
+    	<constructor-arg name="mongoConverter" ref="mongoConverter" />
+    	 <property name="writeConcern">
+            <util:constant static-field="com.mongodb.WriteConcern.SAFE"/>
+        </property>
+  	</bean>
+  	
+  	<bean class="org.springframework.data.mongodb.core.MongoExceptionTranslator"/>
+    
+    <!-- DAO -->
+    <bean id="customerDAO" class="com.demo.dao.impl.CustomerDAO" >
+        <property name="mongoTemplate"><ref bean="mongoTemplate"/></property>
+    </bean>
+    
+   <!-- Service -->
+    <bean id="customerService" class="com.demo.service.impl.CustomerFacadeImpl" >
+	    <property name="customerDao"><ref bean="customerDAO"/></property>  
+	</bean>
+
+	<!-- Controller begin -->	
+	<bean id="customerController" class="com.demo.controller.CustomerController" >
+		<property name="customerService"><ref bean="customerService"/></property>
+	</bean>	
+	<!-- Controller end -->	
+</beans>

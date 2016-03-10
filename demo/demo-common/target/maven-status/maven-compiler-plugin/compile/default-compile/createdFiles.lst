@@ -1,0 +1,5 @@
+com/demo/form/CustomerForm.class
+com/demo/data/DemoErrorMessage$ErrorCode.class
+com/demo/model/Customer.class
+com/demo/data/DemoErrorMessage.class
+com/demo/data/DemoGenericException.class
